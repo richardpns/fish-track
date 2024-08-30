@@ -7,7 +7,6 @@ Além de ser uma ferramenta útil para manter um histórico completo das suas ca
  ## Identidade Visual 
   Paleta de cores: #f7fff4, 135BDA, #072a3d
   
-  
   Fonte: Armata, Istok Web
 
 - ## Wireframes
