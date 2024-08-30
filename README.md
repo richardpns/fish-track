@@ -18,6 +18,10 @@ Este repositório contém a seguinte estrutura:
 - **TAP.pdf**: Documento de Termo de Abertura de Projeto.
 - **prototipo.pdf**: Arquivo do protótipo funcional criado no Figma.
 
+- ## Wireframes
+
+![Wireframe](docs/prototipo/fishtrack.png)
+
 
 
 
