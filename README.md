@@ -7,7 +7,7 @@ Além de ser uma ferramenta útil para manter um histórico completo das suas ca
 
 ## Protótipo
 
-O protótipo do projeto pode ser visualizado neste link do [Figma].
+O protótipo do projeto pode ser visualizado neste link do [Figma](https://www.figma.com/proto/Us86zC5GGhTo0VXWMOWr3h/fishtrack?node-id=0-1&t=2L0C0ci8BKmfntIp-1).
 
 ## Estrutura do Repositório
 
