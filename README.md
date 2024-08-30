@@ -4,25 +4,13 @@ Fish Track é o aplicativo ideal para os amantes da pesca que desejam registrar 
 
 Além de ser uma ferramenta útil para manter um histórico completo das suas capturas, o Fish Track permite que você compartilhe suas conquistas com amigos e outros pescadores, tornando a experiência de pesca ainda mais divertida e social. O aplicativo é intuitivo e fácil de usar, oferecendo um jeito eficiente de acompanhar seu progresso e melhorar suas habilidades de pesca.
 
-
-## Protótipo
-
-O protótipo do projeto pode ser visualizado neste link do [Figma](https://www.figma.com/proto/Us86zC5GGhTo0VXWMOWr3h/fishtrack?node-id=0-1&t=2L0C0ci8BKmfntIp-1).
-
-## Estrutura do Repositório
-
-Este repositório contém a seguinte estrutura:
-
-### Pasta `docs/`
-
-- **TAP.pdf**: Documento de Termo de Abertura de Projeto.
-- **prototipo.pdf**: Arquivo do protótipo funcional criado no Figma.
-
 - ## Wireframes
 
 ![Wireframe](docs/prototipo/fishtrack.png)
 
+## Protótipo
 
+O protótipo do projeto pode ser visualizado neste link do [Figma](https://www.figma.com/proto/Us86zC5GGhTo0VXWMOWr3h/fishtrack?node-id=0-1&t=2L0C0ci8BKmfntIp-1).
 
 
 
