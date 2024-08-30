@@ -5,6 +5,8 @@ Fish Track é o aplicativo ideal para os amantes da pesca que desejam registrar 
 Além de ser uma ferramenta útil para manter um histórico completo das suas capturas, o Fish Track permite que você compartilhe suas conquistas com amigos e outros pescadores, tornando a experiência de pesca ainda mais divertida e social. O aplicativo é intuitivo e fácil de usar, oferecendo um jeito eficiente de acompanhar seu progresso e melhorar suas habilidades de pesca.
 
  ## Identidade Visual 
+  Paleta de cores: #f7fff4, 135BDA, #072a3d
+  Fonte: Armata, Istok Web
 
 - ## Wireframes
 
