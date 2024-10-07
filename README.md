@@ -21,7 +21,7 @@ O protótipo do projeto pode ser visualizado neste link do [Figma](https://www.f
 # Fish Track - Roteiro de Testes
 Este documento contém o roteiro de testes para o aplicativo Fish Track, desenvolvido para ajudar pescadores a registrar e monitorar suas capturas, incluindo fotos, localização e condições climáticas.
 
- --
+ ---
 ## 1. Teste da Tela de Login
 **Objetivo:** Verificar se o sistema permite ao usuário fazer login corretamente utilizando e-mail e senha.
 
@@ -34,7 +34,7 @@ Este documento contém o roteiro de testes para o aplicativo Fish Track, desenvo
  ###  Resultado Esperado
   - [ ] O usuário validado é direcionado para a tela principal com acesso às funcionalidades do aplicativo.
 
- --
+ ---
 ## 2. Teste da Tela de Cadastro
 **Objetivo:** Verificar se o usuário pode se cadastrar com sucesso no aplicativo.
 
@@ -49,7 +49,7 @@ Este documento contém o roteiro de testes para o aplicativo Fish Track, desenvo
 ###  Resultado Esperado
 O usuário é cadastrado e direcionado para a tela de login ou tela principal após o cadastro.
 
---
+---
 ## 3. Teste de Registro de Captura
 **Objetivo:** Verificar se o usuário pode registrar uma captura com sucesso.
 
@@ -63,7 +63,7 @@ O usuário é cadastrado e direcionado para a tela de login ou tela principal ap
 ### Resultado Esperado
 A captura é registrada com sucesso e exibida no histórico de capturas.
 
---
+---
 ## 4. Teste de Geolocalização
 **Objetivo:**
 Verificar se o sistema captura automaticamente a localização da captura via GPS.
@@ -76,7 +76,7 @@ Verificar se o sistema captura automaticamente a localização da captura via GP
 ###  Resultado Esperado
 A localização é registrada corretamente e associada à captura no histórico.
 
---
+---
 ## 5. Teste do Histórico de Capturas
 **Objetivo:**
 Verificar se o usuário pode visualizar corretamente o histórico de capturas registradas.
@@ -89,7 +89,7 @@ Verificar se o usuário pode visualizar corretamente o histórico de capturas re
 ###  Resultado Esperado
 O histórico exibe as capturas corretamente com todas as informações e fotos.
 
---
+---
 ## 6. Teste da Previsão do Tempo
 **Objetivo:** Verificar se a previsão do tempo está sendo exibida corretamente na tela de clima.
 
@@ -101,7 +101,7 @@ O histórico exibe as capturas corretamente com todas as informações e fotos.
 ### Resultado Esperado
 A previsão do tempo é carregada e exibida corretamente, ajudando o usuário a planejar sua pesca.
 
---
+---
 ## 7. Teste de Responsividade
 **Objetivo:**
 Verificar se o layout do aplicativo se ajusta corretamente em diferentes dispositivos (smartphones e tablets).
@@ -114,7 +114,7 @@ Verificar se o layout do aplicativo se ajusta corretamente em diferentes disposi
 ### Resultado Esperado
 O layout se ajusta adequadamente em diferentes tamanhos de tela, mantendo a usabilidade.
 
---
+---
 ## 8. Teste de Feedback do Usuário
 **Objetivo:**
 Verificar se o sistema fornece feedback apropriado ao usuário nas principais interações.
@@ -124,7 +124,7 @@ Verificar se o sistema fornece feedback apropriado ao usuário nas principais in
 - [ ] Realize ações como login, cadastro, registro de captura, e visualização do histórico.
 - [ ] Verifique se o sistema exibe mensagens de confirmação, erro ou alertas quando necessário.
 
---
+---
 ###  Resultado Esperado
 O sistema fornece feedback claro ao usuário em todas as interações importantes.
 
