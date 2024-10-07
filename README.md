@@ -22,7 +22,7 @@ O protótipo do projeto pode ser visualizado neste link do [Figma](https://www.f
 Este documento contém o roteiro de testes para o aplicativo Fish Track, desenvolvido para ajudar pescadores a registrar e monitorar suas capturas, incluindo fotos, localização e condições climáticas.
 
 ## 1. Teste da Tela de Login
-**Objetivo.** Verificar se o sistema permite ao usuário fazer login corretamente utilizando e-mail e senha.
+**Objetivo:** Verificar se o sistema permite ao usuário fazer login corretamente utilizando e-mail e senha.
 
 ### Passos:
 - [ ] Acesse o aplicativo.
@@ -34,7 +34,7 @@ Este documento contém o roteiro de testes para o aplicativo Fish Track, desenvo
   - [ ] O usuário validado é direcionado para a tela principal com acesso às funcionalidades do aplicativo.
 
 ## 2. Teste da Tela de Cadastro
-**Objetivo.** Verificar se o usuário pode se cadastrar com sucesso no aplicativo.
+**Objetivo:** Verificar se o usuário pode se cadastrar com sucesso no aplicativo.
 
 ### Passos:
 - [ ] Acesse o aplicativo.
