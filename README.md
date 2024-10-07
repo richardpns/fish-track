@@ -48,7 +48,7 @@ Este documento contém o roteiro de testes para o aplicativo Fish Track, desenvo
 O usuário é cadastrado e direcionado para a tela de login ou tela principal após o cadastro.
 
 ## 3. Teste de Registro de Captura
-Objetivo Verificar se o usuário pode registrar uma captura com sucesso.
+**Objetivo:** Verificar se o usuário pode registrar uma captura com sucesso.
 
 ### Passos:
 
