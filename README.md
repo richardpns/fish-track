@@ -61,7 +61,7 @@ Objetivo Verificar se o usuário pode registrar uma captura com sucesso.
 A captura é registrada com sucesso e exibida no histórico de capturas.
 
 ## 4. Teste de Geolocalização
-**Objetivo.**
+**Objetivo:**
 Verificar se o sistema captura automaticamente a localização da captura via GPS.
 
 ### Passos:
@@ -73,7 +73,7 @@ Verificar se o sistema captura automaticamente a localização da captura via GP
 A localização é registrada corretamente e associada à captura no histórico.
 
 ## 5. Teste do Histórico de Capturas
-**Objetivo.**
+**Objetivo:**
 Verificar se o usuário pode visualizar corretamente o histórico de capturas registradas.
 
 ### Passos:
@@ -85,19 +85,18 @@ Verificar se o usuário pode visualizar corretamente o histórico de capturas re
 O histórico exibe as capturas corretamente com todas as informações e fotos.
 
 ## 6. Teste da Previsão do Tempo
-**Objetivo.**
-Verificar se a previsão do tempo está sendo exibida corretamente na tela de clima.
+**Objetivo:** Verificar se a previsão do tempo está sendo exibida corretamente na tela de clima.
 
 ### Passos:
 
-Acesse a tela de "Previsão do Tempo".
-Verifique se as informações de temperatura, clima, e fases da lua estão sendo exibidas corretamente.
+- [ ] Acesse a tela de "Previsão do Tempo".
+- [ ] Verifique se as informações de temperatura, clima, e fases da lua estão sendo exibidas corretamente.
 
 ### Resultado Esperado
 A previsão do tempo é carregada e exibida corretamente, ajudando o usuário a planejar sua pesca.
 
 ## 7. Teste de Responsividade
-**Objetivo.**
+**Objetivo:**
 Verificar se o layout do aplicativo se ajusta corretamente em diferentes dispositivos (smartphones e tablets).
 
 ### Passos:
@@ -109,7 +108,7 @@ Verificar se o layout do aplicativo se ajusta corretamente em diferentes disposi
 O layout se ajusta adequadamente em diferentes tamanhos de tela, mantendo a usabilidade.
 
 ## 8. Teste de Feedback do Usuário
-**Objetivo.**
+**Objetivo:**
 Verificar se o sistema fornece feedback apropriado ao usuário nas principais interações.
 
 ### Passos:
