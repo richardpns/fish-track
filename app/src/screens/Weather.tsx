@@ -1,13 +1,49 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Alert, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, Text, Alert, ActivityIndicator, StyleSheet, ScrollView, SafeAreaView, Dimensions } from 'react-native';
 import * as Location from 'expo-location';
+import { MaterialIcons } from '@expo/vector-icons';
+import { LineChart } from 'react-native-chart-kit';
+import { useAppTheme } from '../hooks/useAppTheme';
+
+interface WeatherData {
+    name: string;
+    main: {
+        temp: number;
+        feels_like: number;
+        humidity: number;
+        pressure: number;
+    };
+    weather: Array<{
+        description: string;
+        main: string;
+    }>;
+    wind: {
+        speed: number;
+    };
+}
+
+interface ForecastData {
+    dt: number;
+    main: {
+        temp: number;
+    };
+    weather: Array<{
+        description: string;
+        icon: string;
+        main: string;
+    }>;
+    rain?: {
+        "3h": number;
+    };
+}
 
 const API_KEY = '3956f52e5e3e4d17bc75a48c3ac48f05';
 
 export function Weather() {
-    const [weatherData, setWeatherData] = useState(null);
-    const [forecastData, setForecastData] = useState([]);
-    const [lunarPhase, setLunarPhase] = useState(''); // Novo estado para fase da lua
+    const { colors, isDarkMode } = useAppTheme();
+    const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
+    const [forecastData, setForecastData] = useState<ForecastData[]>([]);
+    const [lunarPhase, setLunarPhase] = useState('');
     const [loading, setLoading] = useState(true);
     const [location, setLocation] = useState({
         latitude: 0,
@@ -35,7 +71,7 @@ export function Weather() {
         }
     }, [location]);
 
-    const fetchWeather = async (latitude, longitude) => {
+    const fetchWeather = async (latitude: number, longitude: number) => {
         try {
             const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=metric&lang=pt_br&appid=${API_KEY}`);
             const result = await response.json();
@@ -48,7 +84,7 @@ export function Weather() {
         }
     };
 
-    const fetchForecast = async (latitude, longitude) => {
+    const fetchForecast = async (latitude: number, longitude: number) => {
         try {
             const response = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&units=metric&lang=pt_br&appid=${API_KEY}`);
             const result = await response.json();
@@ -80,142 +116,373 @@ export function Weather() {
         }
     };
 
-    return (
-        <View style={styles.container}>
+    const getChartData = () => {
+        if (!forecastData.length) return null;
 
-            {loading ? (
-                <ActivityIndicator size="large" color="#0000ff" />
-            ) : weatherData ? (
-                <View style={styles.weatherContainer}>
-                    <Text style={styles.city}>{weatherData.name}</Text>
-                    <Text style={styles.temperature}>{weatherData.main.temp}°C</Text>
-                    <Text style={styles.condition}>{weatherData.weather[0].description}</Text>
-                    
-                    <View style={styles.section}>
-                        <Text style={styles.sectionTitle}>Clima</Text>
-                        <Text style={styles.details}>Sensação Térmica: {weatherData.main.feels_like}°C</Text>
-                        <Text style={styles.details}>Umidade: {weatherData.main.humidity}%</Text>
-                        <Text style={styles.details}>Pressão: {weatherData.main.pressure} hPa</Text>
-                        <Text style={styles.details}>Vento: {weatherData.wind.speed} m/s</Text>
-                    </View>
+        const hours = forecastData.map(forecast => 
+            new Date(forecast.dt * 1000).toLocaleTimeString('pt-BR', {
+                hour: '2-digit',
+            })
+        );
 
-                    <View style={styles.section}>
-                        <Text style={styles.sectionTitle}>Previsão</Text>
-                        {forecastData.map((forecast, index) => (
-                            <View key={index} style={styles.forecastItem}>
-                                <Text style={styles.forecastTime}>
-                                    {new Date(forecast.dt * 1000).toLocaleTimeString('pt-BR', {
-                                        hour: '2-digit',
-                                        minute: '2-digit',
-                                    })}
-                                </Text>
-                                <Text style={styles.forecastTemp}>{forecast.main.temp}°C</Text>
-                                <Text style={styles.forecastDescription}>{forecast.weather[0].description}</Text>
-                                <Text style={styles.forecastRain}>
-                                    Chuva: {forecast.rain ? `${forecast.rain["3h"]} mm` : '0 mm'}
-                                </Text>
-                            </View>
-                        ))}
-                    </View>
+        const temperatures = forecastData.map(forecast => Math.round(forecast.main.temp));
+        const rainfall = forecastData.map(forecast => forecast.rain ? forecast.rain["3h"] : 0);
+        const descriptions = forecastData.map(forecast => forecast.weather[0].description);
 
-                    {/* Seção para a fase lunar e condições de pesca */}
-                    <View style={styles.section}>
-                        <Text style={styles.sectionTitle}>Fase Lunar</Text>
-                        <Text style={styles.details}>{lunarPhase}</Text>
+        return (
+            <View style={[styles.forecastContainer, { backgroundColor: colors.card }]}>
+                <View style={styles.chartLegend}>
+                    <View style={styles.legendItem}>
+                        <View style={[styles.legendDot, { backgroundColor: colors.primary }]} />
+                        <Text style={[styles.legendText, { color: colors.textSecondary }]}>
+                            Temperatura (°C)
+                        </Text>
                     </View>
-                    <View style={styles.section}>
-                        <Text style={styles.sectionTitle}>Condições para Pesca</Text>
-                        <Text style={styles.details}>{analisarClimaParaPesca()}</Text>
+                    <View style={styles.legendItem}>
+                        <View style={[styles.legendDot, { backgroundColor: colors.success }]} />
+                        <Text style={[styles.legendText, { color: colors.textSecondary }]}>
+                            Chuva (mm)
+                        </Text>
                     </View>
                 </View>
-            ) : (
-                <Text>Não foi possível carregar os dados do clima.</Text>
-            )}
-        </View>
+
+                <LineChart
+                    data={{
+                        labels: hours,
+                        datasets: [
+                            {
+                                data: temperatures,
+                                color: (opacity = 1) => isDarkMode 
+                                    ? `rgba(100, 181, 246, ${opacity})`
+                                    : `rgba(33, 150, 243, ${opacity})`,
+                                strokeWidth: 2,
+                            },
+                            {
+                                data: rainfall,
+                                color: (opacity = 1) => isDarkMode 
+                                    ? `rgba(129, 199, 132, ${opacity})`
+                                    : `rgba(76, 175, 80, ${opacity})`,
+                                strokeWidth: 2,
+                            }
+                        ],
+                        legend: ["Temperatura", "Chuva"]
+                    }}
+                    width={Dimensions.get('window').width - 32}
+                    height={220}
+                    chartConfig={{
+                        backgroundColor: colors.card,
+                        backgroundGradientFrom: colors.card,
+                        backgroundGradientTo: colors.card,
+                        decimalPlaces: 0,
+                        color: (opacity = 1) => `rgba(${isDarkMode ? '255, 255, 255' : '51, 51, 51'}, ${opacity})`,
+                        labelColor: (opacity = 1) => `rgba(${isDarkMode ? '255, 255, 255' : '51, 51, 51'}, ${opacity})`,
+                        style: {
+                            borderRadius: 16,
+                        },
+                        propsForDots: {
+                            r: '4',
+                            strokeWidth: '2',
+                        },
+                        propsForBackgroundLines: {
+                            strokeDasharray: '',
+                            stroke: isDarkMode ? '#333333' : '#e3e3e3',
+                            strokeWidth: 1,
+                        },
+                        propsForLabels: {
+                            fontSize: 11,
+                        },
+                    }}
+                    bezier
+                    style={{
+                        marginVertical: 8,
+                        borderRadius: 16,
+                        alignSelf: 'center',
+                    }}
+                    withDots={true}
+                    withShadow={false}
+                    withInnerLines={true}
+                    withOuterLines={true}
+                    withVerticalLabels={true}
+                    withHorizontalLabels={true}
+                    segments={4}
+                />
+
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.descriptionsScroll}>
+                    {descriptions.map((desc, index) => (
+                        <View key={index} style={[styles.descriptionCard, { backgroundColor: colors.card }]}>
+                            <Text style={[styles.descriptionTime, { color: colors.text }]}>{hours[index]}h</Text>
+                            <Text style={[styles.descriptionText, { color: colors.textSecondary }]}>{desc}</Text>
+                        </View>
+                    ))}
+                </ScrollView>
+            </View>
+        );
+    };
+
+    return (
+        <SafeAreaView style={[styles.safeArea, { backgroundColor: colors.background }]}>
+            <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+                <View style={styles.container}>
+                    {loading ? (
+                        <View style={styles.loadingContainer}>
+                            <ActivityIndicator size="large" color={colors.primary} />
+                            <Text style={[styles.loadingText, { color: colors.textSecondary }]}>
+                                Carregando dados do clima...
+                            </Text>
+                        </View>
+                    ) : weatherData ? (
+                        <>
+                            <View style={[styles.mainWeatherCard, { backgroundColor: colors.primary }]}>
+                                <Text style={styles.city}>{weatherData.name}</Text>
+                                <Text style={styles.temperature}>
+                                    {Math.round(weatherData.main.temp)}°C
+                                </Text>
+                                <Text style={styles.condition}>
+                                    {weatherData.weather[0].description}
+                                </Text>
+                                
+                                <View style={styles.weatherDetailsGrid}>
+                                    <View style={styles.weatherDetail}>
+                                        <MaterialIcons name="opacity" size={24} color="#fff" />
+                                        <Text style={styles.weatherDetailLabel}>Umidade</Text>
+                                        <Text style={styles.weatherDetailText}>
+                                            {weatherData.main.humidity}%
+                                        </Text>
+                                    </View>
+                                    <View style={styles.weatherDetail}>
+                                        <MaterialIcons name="air" size={24} color="#fff" />
+                                        <Text style={styles.weatherDetailLabel}>Vento</Text>
+                                        <Text style={styles.weatherDetailText}>
+                                            {weatherData.wind.speed} km/h
+                                        </Text>
+                                    </View>
+                                    <View style={styles.weatherDetail}>
+                                        <MaterialIcons name="compress" size={24} color="#fff" />
+                                        <Text style={styles.weatherDetailLabel}>Pressão</Text>
+                                        <Text style={styles.weatherDetailText}>
+                                            {weatherData.main.pressure} hPa
+                                        </Text>
+                                    </View>
+                                </View>
+                            </View>
+
+                            {getChartData()}
+
+                            <View style={[styles.card, { backgroundColor: colors.card }]}>
+                                <Text style={[styles.sectionTitle, { color: colors.text }]}>
+                                    <MaterialIcons name="nights-stay" size={24} color={colors.primary} /> 
+                                    Fase Lunar
+                                </Text>
+                                <Text style={[styles.details, { color: colors.textSecondary }]}>
+                                    {lunarPhase}
+                                </Text>
+                            </View>
+
+                            <View style={[styles.card, styles.lastCard, { backgroundColor: colors.card }]}>
+                                <Text style={[styles.sectionTitle, { color: colors.text }]}>
+                                    <MaterialIcons name="waves" size={24} color={colors.primary} /> 
+                                    Condições para Pesca
+                                </Text>
+                                <Text style={[styles.details, { color: colors.textSecondary }]}>
+                                    {analisarClimaParaPesca()}
+                                </Text>
+                            </View>
+                        </>
+                    ) : (
+                        <View style={styles.errorContainer}>
+                            <MaterialIcons name="error-outline" size={48} color={colors.error} />
+                            <Text style={[styles.errorText, { color: colors.textSecondary }]}>
+                                Não foi possível carregar os dados do clima.
+                            </Text>
+                        </View>
+                    )}
+                </View>
+            </ScrollView>
+        </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
+    safeArea: {
         flex: 1,
-        backgroundColor: '#f2f2f2',
+        backgroundColor: '#f5f5f5',
     },
-    header: {
-        padding: 15,
-        backgroundColor: '#3a86ff',
-        alignItems: 'center',
+    scrollView: {
+        flex: 1,
     },
-    headerTitle: {
-        color: '#fff',
-        fontSize: 20,
-        fontWeight: 'bold',
-    },
-    weatherContainer: {
-        margin: 20,
+    container: {
         padding: 20,
-        backgroundColor: '#fff',
-        borderRadius: 10,
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 20,
+    },
+    loadingText: {
+        fontSize: 16,
+        color: '#666',
+        marginTop: 10,
+    },
+    mainWeatherCard: {
+        backgroundColor: '#2196F3',
+        borderRadius: 15,
+        padding: 20,
+        alignItems: 'center',
+        marginBottom: 20,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
-        shadowRadius: 5,
+        shadowRadius: 4,
         elevation: 3,
     },
     city: {
-        fontSize: 18,
+        fontSize: 24,
         fontWeight: 'bold',
-        color: '#333',
-        textAlign: 'center',
+        color: '#fff',
+        marginBottom: 10,
     },
     temperature: {
-        fontSize: 50,
+        fontSize: 48,
         fontWeight: 'bold',
-        color: '#333',
-        textAlign: 'center',
+        color: '#fff',
     },
     condition: {
         fontSize: 18,
-        color: '#777',
-        textAlign: 'center',
-        marginBottom: 20,
+        color: '#fff',
+        textTransform: 'capitalize',
     },
-    section: {
-        marginTop: 20,
-        paddingTop: 10,
-        borderTopWidth: 1,
-        borderTopColor: '#eee',
+    card: {
+        backgroundColor: '#fff',
+        borderRadius: 15,
+        padding: 15,
+        marginBottom: 20,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 3,
+    },
+    lastCard: {
+        marginBottom: 40,
     },
     sectionTitle: {
         fontSize: 18,
         fontWeight: 'bold',
-        marginBottom: 10,
-        color: '#3a86ff',
+        color: '#333',
+        marginBottom: 15,
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    detailsContainer: {
+        gap: 10,
+    },
+    detailRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 10,
+        paddingVertical: 5,
     },
     details: {
         fontSize: 16,
         color: '#444',
-        marginTop: 5,
+        flex: 1,
     },
-    forecastItem: {
+    forecastContainer: {
+        backgroundColor: '#f8f9fa',
+        borderRadius: 15,
+        padding: 15,
+        marginBottom: 20,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 3,
+    },
+    chart: {
+        marginVertical: 8,
+        borderRadius: 16,
+        paddingRight: 15,
+    },
+    chartLegend: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
-        paddingVertical: 5,
+        justifyContent: 'center',
+        marginBottom: 10,
+        gap: 20,
+        backgroundColor: '#f8f9fa',
+        padding: 8,
+        borderRadius: 8,
     },
-    forecastTime: {
-        fontSize: 16,
-        color: '#333',
+    legendItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
     },
-    forecastTemp: {
-        fontSize: 16,
-        color: '#3a86ff',
+    legendDot: {
+        width: 10,
+        height: 10,
+        borderRadius: 5,
+        marginRight: 5,
+    },
+    legendText: {
+        fontSize: 12,
+        color: '#666',
+    },
+    descriptionsScroll: {
+        marginTop: 10,
+    },
+    descriptionCard: {
+        backgroundColor: '#f8f9fa',
+        padding: 10,
+        borderRadius: 8,
+        marginRight: 10,
+        minWidth: 100,
+        alignItems: 'center',
+    },
+    descriptionTime: {
+        fontSize: 14,
         fontWeight: 'bold',
-    },
-    forecastDescription: {
-        fontSize: 16,
-        color: '#777',
-    },
-    forecastRain: {
-        fontSize: 16,
         color: '#333',
+        marginBottom: 4,
+    },
+    descriptionText: {
+        fontSize: 12,
+        color: '#666',
+        textAlign: 'center',
+        textTransform: 'capitalize',
+    },
+    errorContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 20,
+    },
+    errorText: {
+        fontSize: 16,
+        color: '#666',
+        textAlign: 'center',
+        marginTop: 10,
+    },
+    weatherDetailsGrid: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        width: '100%',
+        marginTop: 20,
+        paddingHorizontal: 10,
+    },
+    weatherDetail: {
+        alignItems: 'center',
+        flex: 1,
+    },
+    weatherDetailLabel: {
+        color: '#fff',
+        fontSize: 14,
+        marginTop: 5,
+        opacity: 0.9,
+    },
+    weatherDetailText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginTop: 2,
     },
 });

@@ -1,7 +1,9 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import {Feather} from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 import { TouchableOpacity, View, StyleSheet } from 'react-native';
+import { ThemeProvider } from '../contexts/ThemeContext';
+import { useTheme } from '../contexts/ThemeContext';
 
 import { Home } from '../screens/Home';
 import { Settings } from '../screens/Settings';
@@ -12,19 +14,31 @@ import { Capture } from '../screens/Capture';
 
 const { Navigator, Screen } = createBottomTabNavigator();
 
-export function Routes(){
+function Navigation() {
+    const { isDarkMode } = useTheme();
+
     return (
         <NavigationContainer>
-            <Navigator screenOptions={{
-                tabBarActiveTintColor: '#135BDA',
-                tabBarInactiveTintColor: 'gray',
-                tabBarLabel: '',
-            }}>
+            <Navigator 
+                screenOptions={{
+                    tabBarActiveTintColor: isDarkMode ? '#64B5F6' : '#135BDA',
+                    tabBarInactiveTintColor: isDarkMode ? '#666666' : 'gray',
+                    tabBarLabel: '',
+                    tabBarStyle: {
+                        backgroundColor: isDarkMode ? '#1E1E1E' : '#FFFFFF',
+                        borderTopColor: isDarkMode ? '#333333' : '#DDDDDD',
+                    },
+                    headerStyle: {
+                        backgroundColor: isDarkMode ? '#1E1E1E' : '#FFFFFF',
+                    },
+                    headerTintColor: isDarkMode ? '#FFFFFF' : '#333333',
+                }}
+            >
                 <Screen
                     name="Home"
                     component={Home}
                     options={{
-                        tabBarIcon: ({ size, color }) => <Feather name="map" size={size} color={color}   />,
+                        tabBarIcon: ({ size, color }) => <Feather name="map" size={size} color={color} />,
                         headerShown: false,
                     }}
                 />
@@ -44,7 +58,10 @@ export function Routes(){
                      component={Capture}
                      options={{
                          tabBarIcon: ({ size }) => (
-                             <View style={[styles.captureButton]}>
+                             <View style={[
+                                 styles.captureButton,
+                                 { backgroundColor: isDarkMode ? '#64B5F6' : '#135BDA' }
+                             ]}>
                                  <Feather name="plus" size={24} color="white" />
                              </View>
                          ),
@@ -74,12 +91,17 @@ export function Routes(){
                     }}
                 />
 
-
-
             </Navigator>
         </NavigationContainer>
-    )
+    );
+}
 
+export function Routes() {
+    return (
+        <ThemeProvider>
+            <Navigation />
+        </ThemeProvider>
+    );
 }
 
 const styles = StyleSheet.create({
